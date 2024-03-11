@@ -1,6 +1,8 @@
 import 'dart:math';
 
-import 'package:flutter/material.dart';
+import 'package:demineur/views/widgets/custom_button.dart';
+import 'package:flutter/material.dart' hide BoxDecoration, BoxShadow;
+import 'package:flutter_inset_box_shadow/flutter_inset_box_shadow.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -44,22 +46,7 @@ class HomeScreen extends StatelessWidget {
                     top: height * 0.3,
                     left: width * 0.25,
                     right: width * 0.25,
-                    child: Container(
-                      height: width * 0.15,
-                      width: width * 0.5,
-                      decoration: BoxDecoration(
-                          color: Color.fromARGB(255, 82, 191, 221)),
-                      child: ElevatedButton(
-                        onPressed: () {},
-                        style: ElevatedButton.styleFrom(
-                            backgroundColor: Color.fromARGB(255, 82, 191, 221),
-                            foregroundColor: Colors.white),
-                        child: Text(
-                          "Classic Mode",
-                          style: TextStyle(fontSize: 20),
-                        ),
-                      ),
-                    ))
+                    child: CustomButton(width: width))
               ],
             ),
           )),
