@@ -1,6 +1,8 @@
 import 'dart:math';
 
 import 'package:demineur/utils/colors.dart';
+import 'package:demineur/views/screens/settings.dart';
+import 'package:demineur/views/widgets/bottom_rounded.dart';
 import 'package:demineur/views/widgets/custom_button.dart';
 import 'package:demineur/views/widgets/rounded_button.dart';
 import 'package:flutter/material.dart' hide BoxDecoration, BoxShadow;
@@ -70,27 +72,15 @@ class HomeScreen extends StatelessWidget {
                         ),
                       ],
                     )),
-                Positioned(
-                    bottom: 40,
-                    child: Container(
-                      margin: EdgeInsets.only(
-                          left: (width * 0.2), right: (width * 0.2)),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          RoundedButton(
-                            iconButton: Icons.star,
-                          ),
-                          SizedBox(
-                            width: width * 0.2,
-                          ),
-                          RoundedButton(
-                            iconButton: Icons.settings,
-                          ),
-                        ],
-                      ),
-                    ))
+                BottomRoundedRow(
+                  width: width,
+                  LeftIcon: Icons.star,
+                  rightIcon: Icons.settings,
+                  ontapRight: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => Settings()));
+                  },
+                )
               ],
             ),
           )),
