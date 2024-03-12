@@ -5,9 +5,11 @@ class CustomButton extends StatelessWidget {
   const CustomButton({
     super.key,
     required this.width,
+    required this.buttonText,
   });
 
   final double width;
+  final String buttonText;
 
   @override
   Widget build(BuildContext context) {
@@ -19,20 +21,34 @@ class CustomButton extends StatelessWidget {
           border: Border.all(
               color: Color.fromARGB(255, 82, 191, 221),
               width: 2,
+              style: BorderStyle.solid,
               strokeAlign: BorderSide.strokeAlignInside),
           borderRadius: BorderRadius.circular(32),
           color: Color.fromARGB(255, 82, 191, 221),
           boxShadow: [
+            //inside box shadow
             BoxShadow(
                 color: Color.fromARGB(255, 82, 191, 221),
                 offset: Offset(-30, -30),
                 blurRadius: 50,
                 inset: true),
             BoxShadow(
-                color: Color.fromARGB(255, 41, 126, 147),
+                color: Color.fromARGB(255, 45, 139, 163),
                 offset: Offset(30, 30),
                 blurRadius: 30,
                 inset: true),
+            //inside boxshadow near the border
+            BoxShadow(
+                color: Color.fromARGB(255, 46, 91, 118),
+                offset: Offset(-1, -1),
+                blurRadius: 4,
+                inset: true),
+            BoxShadow(
+                color: Color.fromARGB(255, 46, 91, 118),
+                offset: Offset(1, 1),
+                blurRadius: 4,
+                inset: true),
+            //outside boxshadow
             BoxShadow(
                 color: Color.fromARGB(255, 46, 91, 118),
                 offset: Offset(4, 4),
@@ -41,7 +57,7 @@ class CustomButton extends StatelessWidget {
           ]),
       child: Center(
         child: Text(
-          "Classic Mode",
+          buttonText,
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
       ),

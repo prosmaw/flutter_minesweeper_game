@@ -1,6 +1,8 @@
 import 'dart:math';
 
+import 'package:demineur/utils/colors.dart';
 import 'package:demineur/views/widgets/custom_button.dart';
+import 'package:demineur/views/widgets/rounded_button.dart';
 import 'package:flutter/material.dart' hide BoxDecoration, BoxShadow;
 import 'package:flutter_inset_box_shadow/flutter_inset_box_shadow.dart';
 
@@ -29,13 +31,13 @@ class HomeScreen extends StatelessWidget {
                 for (int i = 0; i < 10000; i++)
                   Positioned(
                       left: Random().nextDouble() * width,
-                      bottom: Random().nextDouble() * (height * 0.5),
+                      bottom: Random().nextDouble() * (height * 0.75),
                       child: Container(
-                        width: 0.2,
-                        height: 0.2,
+                        width: 0.5,
+                        height: 0.5,
                         decoration: BoxDecoration(
-                          color: Colors.white,
-                          border: Border.all(color: Colors.white, width: 1.0),
+                          color: Colors.grey,
+                          border: Border.all(color: Colors.grey, width: 1.0),
                           borderRadius: BorderRadius.circular(2.5),
                         ),
                       )),
@@ -43,10 +45,52 @@ class HomeScreen extends StatelessWidget {
                   "assets/images/logo.png",
                 ),
                 Positioned(
-                    top: height * 0.3,
+                    top: height * 0.25,
                     left: width * 0.25,
                     right: width * 0.25,
-                    child: CustomButton(width: width))
+                    child: Column(
+                      children: [
+                        CustomButton(
+                          width: width,
+                          buttonText: "Classic Mode",
+                        ),
+                        SizedBox(
+                          height: 40,
+                        ),
+                        CustomButton(
+                          width: width,
+                          buttonText: "Challenge Mode",
+                        ),
+                        SizedBox(
+                          height: 40,
+                        ),
+                        CustomButton(
+                          width: width,
+                          buttonText: "Daily Trials",
+                        ),
+                      ],
+                    )),
+                Positioned(
+                    bottom: 40,
+                    child: Container(
+                      margin: EdgeInsets.only(
+                          left: (width * 0.2), right: (width * 0.2)),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          RoundedButton(
+                            iconButton: Icons.star,
+                          ),
+                          SizedBox(
+                            width: width * 0.2,
+                          ),
+                          RoundedButton(
+                            iconButton: Icons.settings,
+                          ),
+                        ],
+                      ),
+                    ))
               ],
             ),
           )),
