@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:demineur/utils/colors.dart';
+import 'package:demineur/views/screens/game_page.dart';
 import 'package:demineur/views/screens/settings.dart';
 import 'package:demineur/views/widgets/bottom_rounded.dart';
 import 'package:demineur/views/widgets/custom_button.dart';
@@ -52,9 +53,17 @@ class HomeScreen extends StatelessWidget {
                     right: width * 0.25,
                     child: Column(
                       children: [
-                        CustomButton(
-                          width: width,
-                          buttonText: "Classic Mode",
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => GamePage()));
+                          },
+                          child: CustomButton(
+                            width: width,
+                            buttonText: "Classic Mode",
+                          ),
                         ),
                         SizedBox(
                           height: 40,
