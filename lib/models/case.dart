@@ -1,4 +1,14 @@
+import 'package:demineur/models/grid.dart';
+
 class CaseModel {
+  int _index;
+
+  int get index => _index;
+
+  set index(int value) {
+    _index = value;
+  }
+
   int _x;
 
   int get x => _x;
@@ -23,5 +33,22 @@ class CaseModel {
     _isMined = value;
   }
 
-  CaseModel(this._x, this._y, this._isMined);
+  bool _unCovered;
+
+  bool get unCovered => _unCovered;
+
+  set unCovered(bool value) {
+    _unCovered = value;
+  }
+
+  Grid _grid;
+
+  Grid get grid => _grid;
+
+  set grid(Grid value) {
+    _grid = value;
+  }
+
+  CaseModel(this._index, this._x, this._y, this._isMined, this._unCovered,
+      this._grid);
 }

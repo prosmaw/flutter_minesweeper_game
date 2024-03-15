@@ -44,11 +44,31 @@ class Grid {
       //verified if the index is among mined indexes
       //and set the case as mined
       if (minedIndex.contains(j)) {
-        cases.add(CaseModel(x, y, true));
+        cases.add(CaseModel(j, x, y, true, false, this));
       } else {
-        cases.add(CaseModel(x, y, false));
+        cases.add(CaseModel(j, x, y, false, false, this));
       }
     }
     return cases;
+  }
+
+  void uncovercase(CaseModel caseModel) {
+    if (!caseModel.isMined) {
+      caseModel.unCovered = true;
+    } else
+      return;
+  }
+
+  void unCoverCases(CaseModel caseModel) {
+    if (!caseModel.isMined) {
+      uncovercase(caseModel);
+      uncovercase(cases[caseModel.index + 1]);
+      uncovercase(cases[caseModel.index - 1]);
+      uncovercase(cases[caseModel.index - col]);
+      uncovercase(cases[caseModel.index + (col + 1)]);
+      uncovercase(cases[caseModel.index + (col - 1)]);
+      uncovercase(cases[caseModel.index - (col - 1)]);
+      uncovercase(cases[caseModel.index - (col + 1)]);
+    }
   }
 }

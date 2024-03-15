@@ -38,6 +38,7 @@ dependencies:
   flutter_native_splash: ^2.3.9
   google_fonts: ^6.1.0
   flutter_inset_box_shadow: ^1.0.8
+  flutter_svg: ^2.0.10+1
   
 
 dev_dependencies:
