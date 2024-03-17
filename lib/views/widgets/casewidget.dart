@@ -17,17 +17,16 @@ class _CasewidgetState extends State<Casewidget> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        setState(() {
-          widget.caseModel.grid.unCoverCases(widget.caseModel);
-        });
+        widget.caseModel.grid.unCoverCases(widget.caseModel);
       },
       child: Container(
           height: 30,
           width: 30,
           decoration: BoxDecoration(
-              color: widget.caseModel.unCovered
-                  ? BaseColors.darkSecondary
-                  : Colors.grey,
+              color:
+                  widget.caseModel.grid.cases[widget.caseModel.index].unCovered
+                      ? BaseColors.darkSecondary
+                      : Colors.grey,
               borderRadius: BorderRadius.circular(5),
               border: Border.all(strokeAlign: BorderSide.strokeAlignOutside)),
           child: widget.caseModel.unCovered

@@ -1,5 +1,5 @@
 import 'dart:math';
-
+import 'package:get/get.dart';
 import 'package:demineur/models/case.dart';
 
 class Grid {
@@ -20,6 +20,7 @@ class Grid {
   }
 
   List<CaseModel> cases = [];
+  GridController gridController = Get.put(GridController());
 
   Grid(
     this._col,
@@ -55,6 +56,7 @@ class Grid {
   void uncovercase(CaseModel caseModel) {
     if (!caseModel.isMined) {
       caseModel.unCovered = true;
+      gridController.updateCase(caseModel.index, caseModel);
     } else
       return;
   }
@@ -70,5 +72,16 @@ class Grid {
       uncovercase(cases[caseModel.index - (col - 1)]);
       uncovercase(cases[caseModel.index - (col + 1)]);
     }
+  }
+}
+
+class GridController extends GetxController {
+  var casesController = <CaseModel>[].obs;
+  void addCase(CaseModel caseModel) {
+    casesController.add(caseModel);
+  }
+
+  void updateCase(int id, CaseModel caseModel) {
+    casesController[id] = caseModel;
   }
 }

@@ -39,6 +39,7 @@ dependencies:
   google_fonts: ^6.1.0
   flutter_inset_box_shadow: ^1.0.8
   flutter_svg: ^2.0.10+1
+  get: ^4.6.6
   
 
 dev_dependencies:

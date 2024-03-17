@@ -1,6 +1,7 @@
 import 'package:demineur/models/case.dart';
 import 'package:demineur/models/grid.dart';
 import 'package:demineur/utils/colors.dart';
+import 'package:get/get.dart';
 import 'package:demineur/views/widgets/bottom_rounded.dart';
 import 'package:demineur/views/widgets/casewidget.dart';
 import 'package:flutter/material.dart';
@@ -14,8 +15,10 @@ class GamePage extends StatefulWidget {
 
 class _GamePageState extends State<GamePage> {
   Grid grid = Grid(10, 10);
+  GridController gridController = Get.put(GridController());
   @override
   Widget build(BuildContext context) {
+    List<CaseModel> listCases = grid.Casecreation();
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
     return Scaffold(
@@ -48,10 +51,11 @@ class _GamePageState extends State<GamePage> {
                             crossAxisCount: 10),
                         itemCount: 100,
                         itemBuilder: (BuildContext context, int index) {
-                          grid.Casecreation();
-                          return Casewidget(
-                            caseModel: grid.cases[index],
-                          );
+                          gridController.addCase(listCases[index]);
+                          return Obx(() => Casewidget(
+                                caseModel:
+                                    gridController.casesController[index],
+                              ));
                         }),
                   ))
             ],
