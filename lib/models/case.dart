@@ -41,6 +41,8 @@ class CaseModel {
     _unCovered = value;
   }
 
+  String nearbyMine = '';
+
   Grid _grid;
 
   Grid get grid => _grid;

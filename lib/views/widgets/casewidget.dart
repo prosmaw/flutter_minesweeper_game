@@ -17,6 +17,7 @@ class _CasewidgetState extends State<Casewidget> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
+        print("isMined: ${widget.caseModel.isMined}");
         widget.caseModel.grid.unCoverCases(widget.caseModel);
       },
       child: Container(
@@ -36,7 +37,10 @@ class _CasewidgetState extends State<Casewidget> {
                       height: 20,
                       width: 20,
                     )
-                  : SizedBox()
+                  : Text(
+                      widget.caseModel.nearbyMine,
+                      style: TextStyle(color: Colors.white),
+                    )
               : SizedBox()),
     );
   }

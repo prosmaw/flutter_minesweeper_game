@@ -32,14 +32,6 @@ class _GamePageState extends State<GamePage> {
               Image.asset(
                 "assets/images/logo.png",
               ),
-              BottomRoundedRow(
-                width: width,
-                LeftIcon: Icons.home,
-                ontapLeft: () {
-                  Navigator.pop(context);
-                },
-                rightIcon: Icons.replay,
-              ),
               Positioned(
                   top: (height * 0.25),
                   child: Container(
@@ -57,7 +49,28 @@ class _GamePageState extends State<GamePage> {
                                     gridController.casesController[index],
                               ));
                         }),
-                  ))
+                  )),
+              Positioned(
+                  top: height * 0.75,
+                  child: Row(
+                    children: [
+                      Container(
+                        height: 70,
+                        width: 70,
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(180)),
+                      ),
+                    ],
+                  )),
+              BottomRoundedRow(
+                width: width,
+                LeftIcon: Icons.home,
+                ontapLeft: () {
+                  Navigator.pop(context);
+                },
+                rightIcon: Icons.replay,
+              ),
             ],
           ),
         ),
