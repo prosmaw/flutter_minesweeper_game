@@ -1,11 +1,8 @@
 import 'dart:math';
-
-import 'package:demineur/utils/colors.dart';
 import 'package:demineur/views/screens/game_page.dart';
 import 'package:demineur/views/screens/settings.dart';
 import 'package:demineur/views/widgets/bottom_rounded.dart';
 import 'package:demineur/views/widgets/custom_button.dart';
-import 'package:demineur/views/widgets/rounded_button.dart';
 import 'package:flutter/material.dart' hide BoxDecoration, BoxShadow;
 import 'package:flutter_inset_box_shadow/flutter_inset_box_shadow.dart';
 

@@ -53,17 +53,57 @@ class Grid {
     return cases;
   }
 
-  void uncovercase(CaseModel caseModel) {
-    if (!caseModel.isMined) {
-      caseModel.unCovered = true;
-      gridController.updateCase(caseModel.index, caseModel);
+  void uncovercase(int x, int y) {
+    int position = indexFromPosition(x, y);
+
+    if (position > -1) {
+      if (!cases[position].isMined) {
+        cases[position].unCovered = true;
+        gridController.updateCase(position, cases[position]);
+      } else
+        return;
     } else
       return;
   }
 
+  int indexFromPosition(int x, int y) {
+    int id = cases.indexWhere((element) => element.x == x && element.y == y);
+    return id;
+  }
+
+  int numberM(int nMines, int position) {
+    if (position > -1) {
+      if (cases[position].isMined) {
+        nMines += 1;
+      }
+    }
+    return nMines;
+  }
+
+  int nearbyMines(int x, int y) {
+    int numberofM = 0;
+    int leftid = indexFromPosition((x - 1), y);
+    int rightid = indexFromPosition((x + 1), y);
+    int bottomLid = indexFromPosition((x - 1), (y - 1));
+    int bottomRid = indexFromPosition((x + 1), (y - 1));
+    int topLid = indexFromPosition((x - 1), (y + 1));
+    int topid = indexFromPosition(x, (y + 1));
+    int topRid = indexFromPosition((x + 1), (y + 1));
+    numberofM = numberM(numberofM, leftid);
+    numberofM = numberM(numberofM, rightid);
+    numberofM = numberM(numberofM, bottomLid);
+    numberofM = numberM(numberofM, bottomRid);
+    numberofM = numberM(numberofM, topLid);
+    numberofM = numberM(numberofM, topid);
+    numberofM = numberM(numberofM, topRid);
+    return numberofM;
+  }
+
   void unCoverCases(CaseModel caseModel) {
+    int x = caseModel.x;
+    int y = caseModel.y;
     if (!caseModel.isMined) {
-      uncovercase(caseModel);
+      uncovercase(x, y);
       uncovercase(cases[caseModel.index + 1]);
       uncovercase(cases[caseModel.index - 1]);
       uncovercase(cases[caseModel.index - col]);
