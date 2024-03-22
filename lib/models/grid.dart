@@ -40,8 +40,8 @@ class Grid {
     }
     //iteration to add cases to the grid
     for (j = 0; j < caseNumbers; j++) {
-      int x = j ~/ col;
-      int y = j % col;
+      int x = j % col;
+      int y = j ~/ col;
       //verified if the index is among mined indexes
       //and set the case as mined
       if (minedIndex.contains(j)) {
@@ -61,8 +61,7 @@ class Grid {
   List<int> checkId(List<int> nbl, int i) {
     if (i > -1) {
       nbl.add(i);
-    } else
-      return nbl;
+    }
     return nbl;
   }
 
@@ -98,29 +97,26 @@ class Grid {
     return numberofM;
   }
 
-  void uncovercase(int x, int y) {
-    int position = indexFromPosition(x, y);
-    if (!cases[position].isMined) {
-      cases[position].unCovered = true;
-      gridController.updateCase(position, cases[position]);
-    } else
-      return;
+  void uncovercase(CaseModel ca) {
+    cases[ca.index].unCovered = true;
+    gridController.updateCase(ca.index, cases[ca.index]);
   }
 
   void unCoverCases(CaseModel caseModel) {
     int x = caseModel.x;
     int y = caseModel.y;
-    int nByMines = nearbyMines(x, y);
-    if (nByMines == 0 && !caseModel.isMined) {
-      uncovercase(x, y);
-      List<int> nearByCases = nearbyCases(x, y);
-      for (int i = 0; i < nearByCases.length; i++) {
-        unCoverCases(cases[nearByCases[i]]);
+    if (!caseModel.unCovered) {
+      int nByMines = nearbyMines(x, y);
+      if (nByMines == 0 && !caseModel.isMined) {
+        uncovercase(caseModel);
+        List<int> nearByCases = nearbyCases(x, y);
+        for (int i = 0; i < nearByCases.length; i++) {
+          unCoverCases(cases[nearByCases[i]]);
+        }
+      } else if (nByMines > 0 && !caseModel.isMined) {
+        cases[caseModel.index].nearbyMine = nByMines.toString();
+        uncovercase(caseModel);
       }
-    } else if (nByMines > 0 && !caseModel.isMined) {
-      uncovercase(x, y);
-      cases[caseModel.index].nearbyMine = nByMines.toString();
-      gridController.updateCase(caseModel.index, caseModel);
     }
   }
 }

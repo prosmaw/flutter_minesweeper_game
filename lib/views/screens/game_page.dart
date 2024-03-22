@@ -1,9 +1,11 @@
 import 'package:demineur/models/case.dart';
 import 'package:demineur/models/grid.dart';
+import 'package:demineur/models/session.dart';
 import 'package:demineur/utils/colors.dart';
 import 'package:get/get.dart';
 import 'package:demineur/views/widgets/bottom_rounded.dart';
 import 'package:demineur/views/widgets/casewidget.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/material.dart';
 
 class GamePage extends StatefulWidget {
@@ -15,6 +17,7 @@ class GamePage extends StatefulWidget {
 
 class _GamePageState extends State<GamePage> {
   Grid grid = Grid(10, 10);
+
   GridController gridController = Get.put(GridController());
   @override
   Widget build(BuildContext context) {
@@ -52,16 +55,23 @@ class _GamePageState extends State<GamePage> {
                   )),
               Positioned(
                   top: height * 0.75,
-                  child: Row(
-                    children: [
-                      Container(
+                  child: SizedBox(
+                    height: 70,
+                    width: width,
+                    child: Center(
+                      child: Container(
                         height: 70,
                         width: 70,
                         decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(180)),
+                        child: SvgPicture.asset(
+                          "assets/images/flagad.svg",
+                          height: 20,
+                          width: 20,
+                        ),
                       ),
-                    ],
+                    ),
                   )),
               BottomRoundedRow(
                 width: width,
