@@ -43,6 +43,14 @@ class CaseModel {
 
   String nearbyMine = '';
 
+  bool _isFlaged;
+
+  bool get isFlaged => _isFlaged;
+
+  set isFlaged(bool value) {
+    _isFlaged = value;
+  }
+
   Grid _grid;
 
   Grid get grid => _grid;
@@ -51,6 +59,6 @@ class CaseModel {
     _grid = value;
   }
 
-  CaseModel(this._index, this._x, this._y, this._isMined, this._unCovered,
-      this._grid);
+  CaseModel(this._isFlaged, this._index, this._x, this._y, this._isMined,
+      this._unCovered, this._grid);
 }

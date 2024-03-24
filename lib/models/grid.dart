@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:demineur/models/session.dart';
 import 'package:get/get.dart';
 import 'package:demineur/models/case.dart';
 
@@ -19,23 +20,25 @@ class Grid {
     _col = value;
   }
 
+  int unCoverCells = 0;
+  int cellsWMine = 0;
   List<CaseModel> cases = [];
-  GridController gridController = Get.put(GridController());
 
-  Grid(
-    this._col,
-    this._row,
-  );
+  GridController gridController = Get.put(GridController());
+  SessionController sessionController = Get.put(SessionController());
+
+  Grid(this._col, this._row);
 
 //Case list creation with random mined cases
   List<CaseModel> Casecreation() {
     int caseNumbers = col * row;
-    int minesNumber = caseNumbers ~/ 3;
+    this.cellsWMine = caseNumbers ~/ 3;
+    sessionController.updateMines(cellsWMine);
     //List<CaseModel> casesl = [];
     List<int> minedIndex = [];
     int i = 0, j = 0;
     //iteration to create 1/3 mines at random positions
-    for (i = 0; i < minesNumber; i++) {
+    for (i = 0; i < cellsWMine; i++) {
       minedIndex.add(Random().nextInt(caseNumbers));
     }
     //iteration to add cases to the grid
@@ -45,9 +48,9 @@ class Grid {
       //verified if the index is among mined indexes
       //and set the case as mined
       if (minedIndex.contains(j)) {
-        cases.add(CaseModel(j, x, y, true, false, this));
+        cases.add(CaseModel(false, j, x, y, true, false, this));
       } else {
-        cases.add(CaseModel(j, x, y, false, false, this));
+        cases.add(CaseModel(false, j, x, y, false, false, this));
       }
     }
     return cases;
@@ -106,16 +109,36 @@ class Grid {
     int x = caseModel.x;
     int y = caseModel.y;
     if (!caseModel.unCovered) {
-      int nByMines = nearbyMines(x, y);
-      if (nByMines == 0 && !caseModel.isMined) {
-        uncovercase(caseModel);
-        List<int> nearByCases = nearbyCases(x, y);
-        for (int i = 0; i < nearByCases.length; i++) {
-          unCoverCases(cases[nearByCases[i]]);
+      if (!sessionController.sessionController.value.flagSelected &&
+          !caseModel.isFlaged) {
+        int nByMines = nearbyMines(x, y);
+        if (nByMines == 0 && !caseModel.isMined) {
+          uncovercase(caseModel);
+          caseModel.grid.unCoverCells += 1;
+          if (this.unCoverCells == this.cellsWMine) {
+            sessionController.updateWinState(true);
+          }
+          List<int> nearByCases = nearbyCases(x, y);
+          for (int i = 0; i < nearByCases.length; i++) {
+            unCoverCases(cases[nearByCases[i]]);
+          }
+        } else if (nByMines > 0 && !caseModel.isMined) {
+          cases[caseModel.index].nearbyMine = nByMines.toString();
+          uncovercase(caseModel);
+        } else if (caseModel.isMined) {
+          sessionController.updateLoseState(true);
         }
-      } else if (nByMines > 0 && !caseModel.isMined) {
-        cases[caseModel.index].nearbyMine = nByMines.toString();
-        uncovercase(caseModel);
+      } else if (sessionController.sessionController.value.flagSelected) {
+        caseModel.isFlaged = true;
+        gridController.updateCase(caseModel.index, caseModel);
+        int mines = sessionController.sessionController.value.remainMines;
+        sessionController.updateMines(mines - 1);
+        sessionController.updateFlagState(false);
+      } else if (caseModel.isFlaged) {
+        caseModel.isFlaged = false;
+        gridController.updateCase(caseModel.index, caseModel);
+        int mines = sessionController.sessionController.value.remainMines;
+        sessionController.updateMines(mines + 1);
       }
     }
   }

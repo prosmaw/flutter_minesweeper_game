@@ -30,7 +30,7 @@ class _CasewidgetState extends State<Casewidget> {
                       : Colors.grey,
               borderRadius: BorderRadius.circular(5),
               border: Border.all(strokeAlign: BorderSide.strokeAlignOutside)),
-          child: widget.caseModel.unCovered
+          child: widget.caseModel.unCovered //check if unCovered
               ? widget.caseModel.isMined
                   ? SvgPicture.asset(
                       "assets/images/bomb.svg",
@@ -41,7 +41,9 @@ class _CasewidgetState extends State<Casewidget> {
                       widget.caseModel.nearbyMine,
                       style: TextStyle(color: Colors.white),
                     )
-              : SizedBox()),
+              : widget.caseModel.isFlaged
+                  ? SvgPicture.asset("assets/images/flagad.svg")
+                  : SizedBox()),
     );
   }
 }

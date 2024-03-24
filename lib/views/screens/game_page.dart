@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:demineur/models/case.dart';
 import 'package:demineur/models/grid.dart';
 import 'package:demineur/models/session.dart';
 import 'package:demineur/utils/colors.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:demineur/views/widgets/bottom_rounded.dart';
 import 'package:demineur/views/widgets/casewidget.dart';
@@ -16,9 +19,31 @@ class GamePage extends StatefulWidget {
 }
 
 class _GamePageState extends State<GamePage> {
+  late Timer gameTimer;
+  int counter = 0;
+  Session session = Session(false, 0, "", false, false);
   Grid grid = Grid(10, 10);
-
   GridController gridController = Get.put(GridController());
+  SessionController sessionController = Get.put(SessionController());
+
+  @override
+  void initState() {
+    super.initState();
+    gameTimer = Timer.periodic(Duration(seconds: 1), (timer) {
+      setState(() {
+        counter++;
+      });
+    });
+  }
+
+  String get timerString {
+    int minutes = counter ~/ 60;
+    int seconds = counter % 60;
+    String minuteString = minutes.toString().padLeft(2, '0');
+    String secondString = seconds.toString().padLeft(2, '0');
+    return '$minuteString:$secondString';
+  }
+
   @override
   Widget build(BuildContext context) {
     List<CaseModel> listCases = grid.Casecreation();
@@ -35,6 +60,22 @@ class _GamePageState extends State<GamePage> {
               Image.asset(
                 "assets/images/logo.png",
               ),
+              Positioned(
+                  top: height * 0.20,
+                  child: Obx(() => Container(
+                        margin: EdgeInsets.symmetric(horizontal: 10),
+                        width: width - 20,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Mines left: ${sessionController.sessionController.value.remainMines.toString()}",
+                              style: TextStyle(fontSize: 22),
+                            ),
+                            Text(timerString, style: TextStyle(fontSize: 22))
+                          ],
+                        ),
+                      ))),
               Positioned(
                   top: (height * 0.25),
                   child: Container(
@@ -59,16 +100,29 @@ class _GamePageState extends State<GamePage> {
                     height: 70,
                     width: width,
                     child: Center(
-                      child: Container(
-                        height: 70,
-                        width: 70,
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(180)),
-                        child: SvgPicture.asset(
-                          "assets/images/flagad.svg",
-                          height: 20,
-                          width: 20,
+                      child: GestureDetector(
+                        onTap: () {
+                          if (!session.flagSelected) {
+                            session.flagSelected = true;
+                            sessionController
+                                .updateFlagState(session.flagSelected);
+                          } else if (session.flagSelected) {
+                            session.flagSelected = false;
+                            sessionController
+                                .updateFlagState(session.flagSelected);
+                          }
+                        },
+                        child: Container(
+                          height: 70,
+                          width: 70,
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(180)),
+                          child: SvgPicture.asset(
+                            "assets/images/flagad.svg",
+                            height: 20,
+                            width: 20,
+                          ),
                         ),
                       ),
                     ),
@@ -86,5 +140,11 @@ class _GamePageState extends State<GamePage> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    gameTimer.cancel();
   }
 }

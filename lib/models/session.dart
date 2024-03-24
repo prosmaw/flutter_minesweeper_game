@@ -1,4 +1,3 @@
-import 'package:demineur/models/grid.dart';
 import 'package:get/get.dart';
 
 class Session {
@@ -18,6 +17,14 @@ class Session {
     _win = value;
   }
 
+  bool _lose;
+
+  bool get lose => _lose;
+
+  set lose(bool value) {
+    _lose = value;
+  }
+
   bool _flagSelected;
 
   bool get flagSelected => _flagSelected;
@@ -34,27 +41,40 @@ class Session {
     _remainMines = value;
   }
 
-  Grid _grid;
-
-  Grid get grid => _grid;
-
-  set grid(Grid value) {
-    _grid = value;
-  }
-
   Session(
-      this._flagSelected, this._remainMines, this._time, this._win, this._grid);
+      this._flagSelected, this._remainMines, this._time, this._win, this._lose);
 }
 
 class SessionController extends GetxController {
-  var sessionController = Session(false, 0, "", false, Grid(0, 0)).obs;
-  updateSession(Session sess) {
+  var sessionController = Session(false, 0, "", false, false).obs;
+
+  updateFlagState(bool isSelected) {
     sessionController.update((val) {
-      val!._flagSelected = sess._flagSelected;
-      val._grid = sess._grid;
-      val._remainMines = sess._remainMines;
-      val._time = sess._time;
-      val._win = sess._win;
+      val!._flagSelected = isSelected;
+    });
+  }
+
+  updateTime(String time) {
+    sessionController.update((val) {
+      val!._time = time;
+    });
+  }
+
+  updateWinState(bool win) {
+    sessionController.update((val) {
+      val!._win = win;
+    });
+  }
+
+  updateLoseState(bool lose) {
+    sessionController.update((val) {
+      val!._lose = lose;
+    });
+  }
+
+  updateMines(int mines) {
+    sessionController.update((val) {
+      val!._remainMines = mines;
     });
   }
 }
