@@ -23,6 +23,7 @@ class Grid {
   int unCoverCells = 0;
   int cellsWMine = 0;
   List<CaseModel> cases = [];
+  bool hasFirstTouch = false;
 
   GridController gridController = Get.put(GridController());
   SessionController sessionController = Get.put(SessionController());
@@ -105,39 +106,57 @@ class Grid {
     gridController.updateCase(ca.index, cases[ca.index]);
   }
 
+  void firstTouch(List<int> nearByCases) {
+    for (int i = 0; i < nearByCases.length; i++) {
+      if (cases[nearByCases[i]].isMined) {
+        cases[nearByCases[i]].isMined = false;
+        gridController.updateCase(nearByCases[i], cases[nearByCases[i]]);
+      }
+    }
+    for (int i = 0; i < nearByCases.length; i++) {
+      unCoverCases(cases[nearByCases[i]]);
+    }
+  }
+
   void unCoverCases(CaseModel caseModel) {
     int x = caseModel.x;
     int y = caseModel.y;
     if (!caseModel.unCovered) {
-      if (!sessionController.sessionController.value.flagSelected &&
-          !caseModel.isFlaged) {
-        int nByMines = nearbyMines(x, y);
-        if (nByMines == 0 && !caseModel.isMined) {
-          uncovercase(caseModel);
-          caseModel.grid.unCoverCells += 1;
-          if (this.unCoverCells == this.cellsWMine) {
-            sessionController.updateWinState(true);
+      if (!sessionController.session.flagSelected && !caseModel.isFlaged) {
+        if (hasFirstTouch) {
+          int nByMines = nearbyMines(x, y);
+          if (nByMines == 0 && !caseModel.isMined) {
+            uncovercase(caseModel);
+            caseModel.grid.unCoverCells += 1;
+            if (this.unCoverCells == this.cellsWMine) {
+              sessionController.updateWinState(true);
+            }
+            print("Case discover:${caseModel.grid.unCoverCells}");
+            List<int> nearByCases = nearbyCases(x, y);
+            for (int i = 0; i < nearByCases.length; i++) {
+              unCoverCases(cases[nearByCases[i]]);
+            }
+          } else if (nByMines > 0 && !caseModel.isMined) {
+            cases[caseModel.index].nearbyMine = nByMines.toString();
+            caseModel.grid.unCoverCells += 1;
+            print("Case discover:${caseModel.grid.unCoverCells}");
+            uncovercase(caseModel);
           }
+        } else if (!hasFirstTouch) {
           List<int> nearByCases = nearbyCases(x, y);
-          for (int i = 0; i < nearByCases.length; i++) {
-            unCoverCases(cases[nearByCases[i]]);
-          }
-        } else if (nByMines > 0 && !caseModel.isMined) {
-          cases[caseModel.index].nearbyMine = nByMines.toString();
-          uncovercase(caseModel);
-        } else if (caseModel.isMined) {
-          sessionController.updateLoseState(true);
+          hasFirstTouch = true;
+          firstTouch(nearByCases);
         }
-      } else if (sessionController.sessionController.value.flagSelected) {
+      } else if (sessionController.session.flagSelected) {
         caseModel.isFlaged = true;
         gridController.updateCase(caseModel.index, caseModel);
-        int mines = sessionController.sessionController.value.remainMines;
+        int mines = sessionController.session.remainMines;
         sessionController.updateMines(mines - 1);
         sessionController.updateFlagState(false);
       } else if (caseModel.isFlaged) {
         caseModel.isFlaged = false;
         gridController.updateCase(caseModel.index, caseModel);
-        int mines = sessionController.sessionController.value.remainMines;
+        int mines = sessionController.session.remainMines;
         sessionController.updateMines(mines + 1);
       }
     }

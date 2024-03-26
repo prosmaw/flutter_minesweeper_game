@@ -4,7 +4,6 @@ import 'package:demineur/models/case.dart';
 import 'package:demineur/models/grid.dart';
 import 'package:demineur/models/session.dart';
 import 'package:demineur/utils/colors.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:demineur/views/widgets/bottom_rounded.dart';
 import 'package:demineur/views/widgets/casewidget.dart';
@@ -25,15 +24,42 @@ class _GamePageState extends State<GamePage> {
   Grid grid = Grid(10, 10);
   GridController gridController = Get.put(GridController());
   SessionController sessionController = Get.put(SessionController());
+  List<CaseModel> listCases = [];
 
   @override
   void initState() {
     super.initState();
+    listCases = grid.Casecreation();
     gameTimer = Timer.periodic(Duration(seconds: 1), (timer) {
       setState(() {
         counter++;
       });
     });
+  }
+
+  void winDialog() {
+    if (sessionController.session.win) {
+      showAdaptiveDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text("You Win"),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Image.asset(
+                    "assets/gif/win_animation.gif",
+                    height: 100,
+                  )
+                ],
+              ),
+              actions: [
+                TextButton(onPressed: () {}, child: Text("Home")),
+                TextButton(onPressed: () {}, child: Text("Try again"))
+              ],
+            );
+          });
+    }
   }
 
   String get timerString {
@@ -46,7 +72,6 @@ class _GamePageState extends State<GamePage> {
 
   @override
   Widget build(BuildContext context) {
-    List<CaseModel> listCases = grid.Casecreation();
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
     return Scaffold(
@@ -69,7 +94,7 @@ class _GamePageState extends State<GamePage> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              "Mines left: ${sessionController.sessionController.value.remainMines.toString()}",
+                              "Mines left: ${sessionController.session.remainMines}",
                               style: TextStyle(fontSize: 22),
                             ),
                             Text(timerString, style: TextStyle(fontSize: 22))
