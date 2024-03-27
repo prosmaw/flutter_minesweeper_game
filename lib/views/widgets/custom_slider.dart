@@ -5,17 +5,17 @@ import 'package:flutter/material.dart';
 class CustomSlider extends StatefulWidget {
   CustomSlider({
     super.key,
-    required this.sliderValue,
     required this.sliderName,
+    required this.width,
   });
-  double sliderValue;
   final String sliderName;
-
+  final double width;
   @override
   State<CustomSlider> createState() => _CustomSliderState();
 }
 
 class _CustomSliderState extends State<CustomSlider> {
+  double sliderValue = 0;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -28,36 +28,49 @@ class _CustomSliderState extends State<CustomSlider> {
         SizedBox(
           height: 20,
         ),
-        Container(
-          height: 6,
-          decoration: BoxDecoration(
-            color: BaseColors.darkSecondary,
-            borderRadius: BorderRadius.circular(30),
-            gradient: LinearGradient(
-              colors: [
-                Colors.white,
-                Colors.white,
-                Colors.white.withOpacity(0.1),
-                Colors.transparent.withOpacity(0.08),
-              ],
-              begin: Alignment.centerRight,
-              end: Alignment.centerLeft,
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Container(
+              height: 6,
+              width: widget.width * 0.75,
+              decoration: BoxDecoration(
+                color: BaseColors.darkSecondary,
+                borderRadius: BorderRadius.circular(30),
+                gradient: LinearGradient(
+                  colors: [
+                    Colors.white,
+                    Colors.white,
+                    Colors.white.withOpacity(0.1),
+                    Colors.transparent.withOpacity(0.08),
+                  ],
+                  begin: Alignment.centerRight,
+                  end: Alignment.centerLeft,
+                ),
+              ),
+              child: Slider(
+                value: sliderValue,
+                onChanged: (value) {
+                  setState(() {
+                    sliderValue = value;
+                    print("${sliderValue}");
+                  });
+                },
+                min: 0,
+                max: 100,
+                thumbColor: Colors.white,
+                overlayColor: MaterialStatePropertyAll(
+                    Color.fromARGB(255, 87, 174, 211).withOpacity(0.5)),
+                activeColor: Colors.transparent,
+                inactiveColor: Colors.transparent,
+                autofocus: true,
+              ),
             ),
-          ),
-          child: Slider(
-            value: widget.sliderValue,
-            onChanged: (value) {
-              setState(() {
-                widget.sliderValue = value;
-              });
-            },
-            thumbColor: Colors.white,
-            overlayColor: MaterialStatePropertyAll(
-                Color.fromARGB(255, 87, 174, 211).withOpacity(0.5)),
-            activeColor: Colors.transparent,
-            inactiveColor: Colors.transparent,
-            autofocus: true,
-          ),
+            Text(
+              "${sliderValue.floor()}",
+              style: TextStyle(fontSize: 20),
+            )
+          ],
         ),
       ],
     );

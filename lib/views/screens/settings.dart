@@ -2,6 +2,8 @@ import 'package:demineur/views/widgets/bottom_rounded.dart';
 import 'package:demineur/views/widgets/custom_slider.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
+import 'package:demineur/utils/routes.dart';
+import 'package:get/get.dart';
 
 class Settings extends StatefulWidget {
   const Settings({super.key});
@@ -9,11 +11,6 @@ class Settings extends StatefulWidget {
   @override
   State<Settings> createState() => _SettingsState();
 }
-
-double fieldHeigh = 0;
-double fieldWidth = 0;
-double minesNumber = 0;
-double timer = 0;
 
 class _SettingsState extends State<Settings> {
   @override
@@ -45,19 +42,23 @@ class _SettingsState extends State<Settings> {
                     style: TextStyle(fontSize: 27, fontWeight: FontWeight.bold),
                   ),
                 )),
-            for (int i = 0; i < 10000; i++)
-              Positioned(
-                  left: Random().nextDouble() * width,
-                  bottom: Random().nextDouble() * (height * 0.75),
-                  child: Container(
-                    width: 0.5,
-                    height: 0.5,
-                    decoration: BoxDecoration(
-                      color: Colors.grey,
-                      border: Border.all(color: Colors.grey, width: 1.0),
-                      borderRadius: BorderRadius.circular(2.5),
-                    ),
-                  )),
+            // Stack(
+            //   children: List.generate(
+            //     10000,
+            //     (index) => Positioned(
+            //         left: Random().nextDouble() * width,
+            //         bottom: Random().nextDouble() * (height * 0.75),
+            //         child: Container(
+            //           width: 0.5,
+            //           height: 0.5,
+            //           decoration: BoxDecoration(
+            //             color: Colors.grey,
+            //             border: Border.all(color: Colors.grey, width: 1.0),
+            //             borderRadius: BorderRadius.circular(2.5),
+            //           ),
+            //         )),
+            //   ),
+            // ),
             Positioned(
                 top: 100,
                 child: Container(
@@ -66,29 +67,29 @@ class _SettingsState extends State<Settings> {
                   child: Column(
                     children: [
                       CustomSlider(
-                        sliderValue: fieldWidth,
                         sliderName: "Minefield Width",
+                        width: width,
                       ),
                       SizedBox(
                         height: 60,
                       ),
                       CustomSlider(
-                        sliderValue: fieldHeigh,
                         sliderName: "Minefield Height",
+                        width: width,
                       ),
                       SizedBox(
                         height: 60,
                       ),
                       CustomSlider(
-                        sliderValue: minesNumber,
                         sliderName: "Mines",
+                        width: width,
                       ),
                       SizedBox(
                         height: 60,
                       ),
                       CustomSlider(
-                        sliderValue: timer,
                         sliderName: "Timer",
+                        width: width,
                       ),
                     ],
                   ),
@@ -97,9 +98,12 @@ class _SettingsState extends State<Settings> {
               width: width,
               LeftIcon: Icons.home,
               ontapLeft: () {
-                Navigator.pop(context);
+                Get.back();
               },
               rightIcon: Icons.play_arrow,
+              ontapRight: () {
+                Get.toNamed(Routes.GamePage);
+              },
             )
           ],
         )),

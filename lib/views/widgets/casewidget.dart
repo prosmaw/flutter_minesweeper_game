@@ -1,6 +1,9 @@
 import 'package:demineur/models/case.dart';
 import 'package:demineur/models/session.dart';
 import 'package:demineur/utils/colors.dart';
+import 'package:demineur/utils/routes.dart';
+import 'package:demineur/views/screens/game_page.dart';
+import 'package:demineur/views/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -47,9 +50,13 @@ class _CasewidgetState extends State<Casewidget> {
                       height: 20,
                       width: 20,
                     )
-                  : Text(
-                      widget.caseModel.nearbyMine,
-                      style: TextStyle(color: Colors.white),
+                  : Center(
+                      child: Text(
+                        widget.caseModel.nearbyMine,
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
                     )
               : widget.caseModel.isFlaged
                   ? SvgPicture.asset("assets/images/flagad.svg")
@@ -58,26 +65,36 @@ class _CasewidgetState extends State<Casewidget> {
   }
 
   void loseDialog() {
-    print("Lose dialog");
     if (sessionController.session.lose) {
-      print("Game lose state:${sessionController.session.lose}");
       showAdaptiveDialog(
           context: context,
+          barrierDismissible: false,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text("Game Over"),
+              title: Text(
+                "Game Over",
+                style: TextStyle(color: BaseColors.darkSecondary),
+              ),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Image.asset(
                     "assets/gif/explosion.gif",
-                    height: 100,
+                    height: 200,
                   )
                 ],
               ),
               actions: [
-                TextButton(onPressed: () {}, child: Text("Home")),
-                TextButton(onPressed: () {}, child: Text("Try again"))
+                TextButton(
+                    onPressed: () {
+                      Get.to(() => HomeScreen());
+                    },
+                    child: Text("Home")),
+                TextButton(
+                    onPressed: () {
+                      Get.to(() => GamePage());
+                    },
+                    child: Text("Try again"))
               ],
             );
           });

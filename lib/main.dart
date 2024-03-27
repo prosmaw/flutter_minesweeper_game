@@ -1,6 +1,7 @@
-import 'package:demineur/views/screens/home_screen.dart';
+import 'package:demineur/utils/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 void main() {
@@ -22,11 +23,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: defaultTheme,
-      home: const HomeScreen(),
+      initialRoute: Routes.Home,
+      getPages: getPages,
     );
   }
 }

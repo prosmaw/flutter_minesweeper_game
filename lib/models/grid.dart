@@ -30,38 +30,52 @@ class Grid {
 
   Grid(this._col, this._row);
 
-//Case list creation with random mined cases
+  //case list creation
   List<CaseModel> Casecreation() {
     int caseNumbers = col * row;
-    this.cellsWMine = caseNumbers ~/ 3;
+    this.cellsWMine = 40;
     sessionController.updateMines(cellsWMine);
-    //List<CaseModel> casesl = [];
-    List<int> minedIndex = [];
-    int i = 0, j = 0;
-    //iteration to create 1/3 mines at random positions
-    for (i = 0; i < cellsWMine; i++) {
-      minedIndex.add(Random().nextInt(caseNumbers));
-    }
-    //iteration to add cases to the grid
-    for (j = 0; j < caseNumbers; j++) {
+    for (int j = 0; j < caseNumbers; j++) {
       int x = j % col;
       int y = j ~/ col;
-      //verified if the index is among mined indexes
-      //and set the case as mined
-      if (minedIndex.contains(j)) {
-        cases.add(CaseModel(false, j, x, y, true, false, this));
-      } else {
-        cases.add(CaseModel(false, j, x, y, false, false, this));
-      }
+      cases.add(CaseModel(false, j, x, y, false, false, this));
     }
     return cases;
   }
 
+//Case list update with random mined cases
+  void MineCases(List<int> firstTouchIds) {
+    int caseNumbers = col * row;
+    //List<CaseModel> casesl = [];
+    List<int> minedIndex = [];
+    int i = 0, j = 0;
+    //iteration to create number of mines at random positions
+    for (i = 0; i < cellsWMine; i++) {
+      int id = Random().nextInt(caseNumbers);
+      if (!firstTouchIds.contains(id) && !minedIndex.contains(id)) {
+        minedIndex.add(id);
+      } else {
+        int id = Random().nextInt(caseNumbers);
+        minedIndex.add(id);
+      }
+    }
+    //iteration to add mine to cases
+    for (j = 0; j < minedIndex.length; j++) {
+      //verified if the index is among mined indexes
+      //and set the case as mined
+      this.cases[minedIndex[j]].isMined = true;
+      gridController.updateCase(minedIndex[j], this.cases[minedIndex[j]]);
+    }
+  }
+
+  // get index of a cell based on its position
   int indexFromPosition(int x, int y) {
     int id = cases.indexWhere((element) => element.x == x && element.y == y);
     return id;
   }
 
+  //check if the index returned exist and return a list
+  // of existing index
   List<int> checkId(List<int> nbl, int i) {
     if (i > -1) {
       nbl.add(i);
@@ -69,6 +83,7 @@ class Grid {
     return nbl;
   }
 
+  //Get nearby cells positions of a specific cell
   List<int> nearbyCases(int x, int y) {
     List<int> nearbyList = [];
     int leftid = indexFromPosition((x - 1), y);
@@ -90,6 +105,7 @@ class Grid {
     return nearbyList;
   }
 
+  // count nearby mines of a specific cell
   int nearbyMines(int x, int y) {
     int numberofM = 0;
     List<int> nearbyList = nearbyCases(x, y);
@@ -101,31 +117,33 @@ class Grid {
     return numberofM;
   }
 
+  //change of the uncover state of a specific cell
   void uncovercase(CaseModel ca) {
     cases[ca.index].unCovered = true;
     gridController.updateCase(ca.index, cases[ca.index]);
   }
 
-  void firstTouch(List<int> nearByCases) {
-    for (int i = 0; i < nearByCases.length; i++) {
-      if (cases[nearByCases[i]].isMined) {
-        cases[nearByCases[i]].isMined = false;
-        gridController.updateCase(nearByCases[i], cases[nearByCases[i]]);
-      }
-    }
+  //first touch uncover function
+  void firstTouch(List<int> nearByCases, int cellTouchedId) {
+    List<int> firstTouchIds = nearByCases;
+    firstTouchIds.add(cellTouchedId);
+    MineCases(firstTouchIds);
     for (int i = 0; i < nearByCases.length; i++) {
       unCoverCases(cases[nearByCases[i]]);
     }
   }
 
+  // recurcive function to uncover a cell and adjacent cells
   void unCoverCases(CaseModel caseModel) {
     int x = caseModel.x;
     int y = caseModel.y;
     if (!caseModel.unCovered) {
       if (!sessionController.session.flagSelected && !caseModel.isFlaged) {
+        //in case one cell has been touched already
         if (hasFirstTouch) {
           int nByMines = nearbyMines(x, y);
           if (nByMines == 0 && !caseModel.isMined) {
+            // in case nearby mine equal zero
             uncovercase(caseModel);
             caseModel.grid.unCoverCells += 1;
             if (this.unCoverCells == this.cellsWMine) {
@@ -137,23 +155,27 @@ class Grid {
               unCoverCases(cases[nearByCases[i]]);
             }
           } else if (nByMines > 0 && !caseModel.isMined) {
+            // in case nearby mine is greater than 0
             cases[caseModel.index].nearbyMine = nByMines.toString();
             caseModel.grid.unCoverCells += 1;
             print("Case discover:${caseModel.grid.unCoverCells}");
             uncovercase(caseModel);
           }
         } else if (!hasFirstTouch) {
+          //in case of first touch
           List<int> nearByCases = nearbyCases(x, y);
           hasFirstTouch = true;
-          firstTouch(nearByCases);
+          firstTouch(nearByCases, caseModel.index);
         }
       } else if (sessionController.session.flagSelected) {
+        //in case session flag is selected
         caseModel.isFlaged = true;
         gridController.updateCase(caseModel.index, caseModel);
         int mines = sessionController.session.remainMines;
         sessionController.updateMines(mines - 1);
         sessionController.updateFlagState(false);
       } else if (caseModel.isFlaged) {
+        // case cell is flagged
         caseModel.isFlaged = false;
         gridController.updateCase(caseModel.index, caseModel);
         int mines = sessionController.session.remainMines;

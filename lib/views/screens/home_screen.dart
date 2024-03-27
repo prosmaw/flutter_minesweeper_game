@@ -1,10 +1,10 @@
 import 'dart:math';
-import 'package:demineur/views/screens/game_page.dart';
-import 'package:demineur/views/screens/settings.dart';
+import 'package:demineur/utils/routes.dart';
 import 'package:demineur/views/widgets/bottom_rounded.dart';
 import 'package:demineur/views/widgets/custom_button.dart';
 import 'package:flutter/material.dart' hide BoxDecoration, BoxShadow;
 import 'package:flutter_inset_box_shadow/flutter_inset_box_shadow.dart';
+import 'package:get/get.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -28,21 +28,21 @@ class HomeScreen extends StatelessWidget {
           child: SafeArea(
             child: Stack(
               children: [
-                for (int i = 0; i < 10000; i++)
-                  Positioned(
-                      left: Random().nextDouble() * width,
-                      bottom: Random().nextDouble() * (height * 0.75),
-                      child: Container(
-                        width: 0.5,
-                        height: 0.5,
-                        decoration: BoxDecoration(
-                          color: Colors.grey,
-                          border: Border.all(color: Colors.grey, width: 1.0),
-                          borderRadius: BorderRadius.circular(2.5),
-                        ),
-                      )),
+                // for (int i = 0; i < 10000; i++)
+                //   Positioned(
+                //       left: Random().nextDouble() * width,
+                //       bottom: Random().nextDouble() * (height * 0.75),
+                //       child: Container(
+                //         width: 0.5,
+                //         height: 0.5,
+                //         decoration: BoxDecoration(
+                //           color: Colors.grey,
+                //           border: Border.all(color: Colors.grey, width: 1.0),
+                //           borderRadius: BorderRadius.circular(2.5),
+                //         ),
+                //       )),
                 Image.asset(
-                  "assets/images/logo.png",
+                  "assets/images/logo2.png",
                 ),
                 Positioned(
                     top: height * 0.25,
@@ -52,10 +52,7 @@ class HomeScreen extends StatelessWidget {
                       children: [
                         GestureDetector(
                           onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => GamePage()));
+                            Get.toNamed(Routes.GamePage);
                           },
                           child: CustomButton(
                             width: width,
@@ -81,10 +78,12 @@ class HomeScreen extends StatelessWidget {
                 BottomRoundedRow(
                   width: width,
                   LeftIcon: Icons.star,
+                  ontapLeft: () {
+                    Get.toNamed(Routes.StatisticsPage);
+                  },
                   rightIcon: Icons.settings,
                   ontapRight: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => Settings()));
+                    Get.toNamed(Routes.SettingsPage);
                   },
                 )
               ],
