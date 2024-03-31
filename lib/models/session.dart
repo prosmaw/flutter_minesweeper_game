@@ -1,11 +1,13 @@
+import 'dart:async';
+
 import 'package:get/get.dart';
 
 class Session {
-  String _time;
+  int _time;
 
-  String get time => _time;
+  int get time => _time;
 
-  set time(String value) {
+  set time(int value) {
     _time = value;
   }
 
@@ -46,9 +48,32 @@ class Session {
 }
 
 class SessionController extends GetxController {
-  var _session = Session(false, 0, "", false, false).obs;
-
+  var _session = Session(false, 0, 0, false, false).obs;
+  Timer gameTimer = Timer(Duration(seconds: 1), () {});
   Session get session => _session.value;
+
+  void updateTimer() {
+    gameTimer = Timer.periodic(Duration(seconds: 1), (timer) {
+      session._time += 1;
+      update();
+    });
+  }
+
+  void stopTimer() {
+    gameTimer.cancel();
+  }
+
+  void reload() {
+    stopTimer();
+    _session.update((val) {
+      val!._flagSelected = false;
+      val._lose = false;
+      val._remainMines = 0;
+      val._win = false;
+      val._time = 0;
+    });
+    update();
+  }
 
   updateFlagState(bool isSelected) {
     _session.update((val) {
@@ -56,7 +81,7 @@ class SessionController extends GetxController {
     });
   }
 
-  updateTime(String time) {
+  updateTime(int time) {
     _session.update((val) {
       val!._time = time;
     });

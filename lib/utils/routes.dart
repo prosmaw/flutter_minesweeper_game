@@ -13,7 +13,7 @@ class Routes {
 
 final getPages = [
   GetPage(name: Routes.Home, page: () => const HomeScreen()),
-  GetPage(name: Routes.GamePage, page: () => const GamePage()),
+  GetPage(name: Routes.GamePage, page: () => GamePage()),
   GetPage(name: Routes.SettingsPage, page: () => const Settings()),
   GetPage(name: Routes.StatisticsPage, page: () => const StatisticsPage())
 ];

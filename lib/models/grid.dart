@@ -133,17 +133,48 @@ class Grid {
     }
   }
 
+  void afterFirstTouch(CaseModel caseModel) {
+    int nByMines = nearbyMines(caseModel.x, caseModel.y);
+    // in case nearby mine equal zero
+    if (nByMines == 0 && !caseModel.isMined) {
+      uncovercase(caseModel);
+      caseModel.grid.unCoverCells += 1;
+      if (this.unCoverCells == this.cellsWMine) {
+        sessionController.updateWinState(true);
+      }
+      print("Case discover:${caseModel.grid.unCoverCells}");
+      List<int> nearByCases = nearbyCases(caseModel.x, caseModel.y);
+      for (int i = 0; i < nearByCases.length; i++) {
+        unCoverCases(cases[nearByCases[i]]);
+      }
+    } else if (nByMines > 0 && !caseModel.isMined) {
+      // in case nearby mine is greater than 0
+      cases[caseModel.index].nearbyMine = nByMines.toString();
+      caseModel.grid.unCoverCells += 1;
+      print("Case discover:${caseModel.grid.unCoverCells}");
+      uncovercase(caseModel);
+    }
+  }
+
+  void unCoverMines() {
+    for (int i = 0; i < cases.length; i++) {
+      if (cases[i].isMined) uncovercase(cases[i]);
+    }
+  }
+
   // recurcive function to uncover a cell and adjacent cells
   void unCoverCases(CaseModel caseModel) {
     int x = caseModel.x;
     int y = caseModel.y;
+    //check if cell is uncovered
     if (!caseModel.unCovered) {
       if (!sessionController.session.flagSelected && !caseModel.isFlaged) {
         //in case one cell has been touched already
         if (hasFirstTouch) {
+          //afterFirstTouch(caseModel);
           int nByMines = nearbyMines(x, y);
+          // in case nearby mine equal zero
           if (nByMines == 0 && !caseModel.isMined) {
-            // in case nearby mine equal zero
             uncovercase(caseModel);
             caseModel.grid.unCoverCells += 1;
             if (this.unCoverCells == this.cellsWMine) {
@@ -163,6 +194,7 @@ class Grid {
           }
         } else if (!hasFirstTouch) {
           //in case of first touch
+          sessionController.updateTimer();
           List<int> nearByCases = nearbyCases(x, y);
           hasFirstTouch = true;
           firstTouch(nearByCases, caseModel.index);
@@ -191,7 +223,13 @@ class GridController extends GetxController {
     casesController.add(caseModel);
   }
 
+  void reload() {
+    casesController.clear();
+    update();
+  }
+
   void updateCase(int id, CaseModel caseModel) {
     casesController[id] = caseModel;
+    update();
   }
 }

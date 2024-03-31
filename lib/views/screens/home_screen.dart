@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:demineur/utils/routes.dart';
+import 'package:demineur/views/screens/game_page.dart';
 import 'package:demineur/views/widgets/bottom_rounded.dart';
 import 'package:demineur/views/widgets/custom_button.dart';
 import 'package:flutter/material.dart' hide BoxDecoration, BoxShadow;
@@ -52,7 +53,7 @@ class HomeScreen extends StatelessWidget {
                       children: [
                         GestureDetector(
                           onTap: () {
-                            Get.toNamed(Routes.GamePage);
+                            Get.to(() => GamePage());
                           },
                           child: CustomButton(
                             width: width,

@@ -1,10 +1,7 @@
-import 'dart:async';
-
 import 'package:demineur/models/case.dart';
 import 'package:demineur/models/grid.dart';
 import 'package:demineur/models/session.dart';
 import 'package:demineur/utils/colors.dart';
-import 'package:demineur/utils/routes.dart';
 import 'package:demineur/views/screens/home_screen.dart';
 import 'package:get/get.dart';
 import 'package:demineur/views/widgets/bottom_rounded.dart';
@@ -20,9 +17,7 @@ class GamePage extends StatefulWidget {
 }
 
 class _GamePageState extends State<GamePage> {
-  late Timer gameTimer;
-  int counter = 0;
-  Session session = Session(false, 0, "", false, false);
+  Session session = Session(false, 0, 0, false, false);
   Grid grid = Grid(16, 16);
   GridController gridController = Get.put(GridController());
   SessionController sessionController = Get.put(SessionController());
@@ -32,11 +27,6 @@ class _GamePageState extends State<GamePage> {
   void initState() {
     super.initState();
     listCases = grid.Casecreation();
-    gameTimer = Timer.periodic(Duration(seconds: 1), (timer) {
-      setState(() {
-        counter++;
-      });
-    });
   }
 
   void winDialog() {
@@ -64,21 +54,18 @@ class _GamePageState extends State<GamePage> {
     }
   }
 
-  String get timerString {
-    int minutes = counter ~/ 60;
-    int seconds = counter % 60;
-    String minuteString = minutes.toString().padLeft(2, '0');
-    String secondString = seconds.toString().padLeft(2, '0');
-    return '$minuteString:$secondString';
-  }
-
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
     return Scaffold(
       body: GetBuilder<SessionController>(builder: (_) {
+        int minutes = sessionController.session.time ~/ 60;
+        int seconds = sessionController.session.time % 60;
+        String minuteString = minutes.toString().padLeft(2, '0');
+        String secondString = seconds.toString().padLeft(2, '0');
         return GetBuilder<GridController>(builder: (_) {
+          print("Flag selected: ${sessionController.session.flagSelected}");
           return Container(
             height: height,
             width: width,
@@ -101,7 +88,8 @@ class _GamePageState extends State<GamePage> {
                               "Mines left: ${sessionController.session.remainMines}",
                               style: TextStyle(fontSize: 22),
                             ),
-                            Text(timerString, style: TextStyle(fontSize: 22))
+                            Text("${minuteString}:${secondString}",
+                                style: TextStyle(fontSize: 22))
                           ],
                         ),
                       )),
@@ -161,11 +149,14 @@ class _GamePageState extends State<GamePage> {
                     width: width,
                     LeftIcon: Icons.home,
                     ontapLeft: () {
-                      Get.to(() => HomeScreen());
+                      Get.off(() => HomeScreen());
                     },
                     rightIcon: Icons.replay,
                     ontapRight: () {
-                      Get.off(() => GamePage());
+                      sessionController.reload();
+                      gridController.reload();
+                      grid = Grid(16, 16);
+                      listCases = grid.Casecreation();
                     },
                   ),
                 ],
@@ -177,11 +168,46 @@ class _GamePageState extends State<GamePage> {
     );
   }
 
+  void loseDialog() {
+    if (sessionController.session.lose) {
+      showAdaptiveDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text(
+                "Game Over",
+                style: TextStyle(color: BaseColors.darkSecondary),
+              ),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Image.asset(
+                    "assets/gif/explosion.gif",
+                    height: 200,
+                  )
+                ],
+              ),
+              actions: [
+                TextButton(
+                    onPressed: () {
+                      Get.to(() => HomeScreen());
+                    },
+                    child: Text("Home")),
+                TextButton(
+                    onPressed: () {
+                      Get.back();
+                      Get.off(() => GamePage());
+                    },
+                    child: Text("Try again"))
+              ],
+            );
+          });
+    }
+  }
+
   @override
   void dispose() {
     super.dispose();
-    gameTimer.cancel();
-    gridController.dispose();
-    sessionController.dispose();
   }
 }

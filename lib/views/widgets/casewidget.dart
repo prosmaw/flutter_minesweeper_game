@@ -1,7 +1,7 @@
 import 'package:demineur/models/case.dart';
 import 'package:demineur/models/session.dart';
 import 'package:demineur/utils/colors.dart';
-import 'package:demineur/utils/routes.dart';
+
 import 'package:demineur/views/screens/game_page.dart';
 import 'package:demineur/views/screens/home_screen.dart';
 import 'package:flutter/material.dart';
@@ -28,6 +28,7 @@ class _CasewidgetState extends State<Casewidget> {
             widget.caseModel.isMined &&
             !widget.caseModel.isFlaged) {
           sessionController.updateLoseState(true);
+          sessionController.stopTimer();
           loseDialog();
         } else {
           widget.caseModel.grid.unCoverCases(widget.caseModel);
@@ -37,10 +38,9 @@ class _CasewidgetState extends State<Casewidget> {
           height: 30,
           width: 30,
           decoration: BoxDecoration(
-              color:
-                  widget.caseModel.grid.cases[widget.caseModel.index].unCovered
-                      ? BaseColors.darkSecondary
-                      : Color.fromARGB(255, 199, 184, 184),
+              color: widget.caseModel.unCovered
+                  ? BaseColors.darkSecondary
+                  : Color.fromARGB(255, 199, 184, 184),
               borderRadius: BorderRadius.circular(5),
               border: Border.all(strokeAlign: BorderSide.strokeAlignOutside)),
           child: widget.caseModel.unCovered //check if unCovered
