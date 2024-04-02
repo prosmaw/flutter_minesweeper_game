@@ -1,5 +1,6 @@
+import 'dart:async';
 import 'dart:math';
-import 'package:demineur/models/session.dart';
+import 'package:demineur/controllers/session_controller.dart';
 import 'package:get/get.dart';
 import 'package:demineur/models/case.dart';
 
@@ -20,6 +21,14 @@ class Grid {
     _col = value;
   }
 
+  int _minesNumber;
+
+  int get minesNumber => _minesNumber;
+
+  set minesNumber(int value) {
+    _minesNumber = value;
+  }
+
   int unCoverCells = 0;
   int cellsWMine = 0;
   List<CaseModel> cases = [];
@@ -27,13 +36,12 @@ class Grid {
 
   SessionController sessionController = Get.put(SessionController());
 
-  Grid(this._col, this._row);
+  Grid(this._col, this._row, this._minesNumber);
 
   //case list creation
   void Casecreation() {
     int caseNumbers = col * row;
-    this.cellsWMine = 40;
-    sessionController.updateMines(cellsWMine);
+    cellsWMine = (caseNumbers - minesNumber);
     for (int j = 0; j < caseNumbers; j++) {
       int x = j % col;
       int y = j ~/ col;
@@ -45,11 +53,10 @@ class Grid {
 //Case list update with random mined cases
   void MineCases(List<int> firstTouchIds) {
     int caseNumbers = col * row;
-    //List<CaseModel> casesl = [];
     List<int> minedIndex = [];
     int i = 0, j = 0;
     //iteration to create number of mines at random positions
-    for (i = 0; i < cellsWMine; i++) {
+    for (i = 0; i < minesNumber; i++) {
       int id = Random().nextInt(caseNumbers);
       if (!firstTouchIds.contains(id) && !minedIndex.contains(id)) {
         minedIndex.add(id);
@@ -139,7 +146,6 @@ class Grid {
       if (this.unCoverCells == this.cellsWMine) {
         sessionController.updateWinState(true);
       }
-      print("Case discover:${caseModel.grid.unCoverCells}");
       List<int> nearByCases = nearbyCases(caseModel.x, caseModel.y);
       for (int i = 0; i < nearByCases.length; i++) {
         unCoverCases(cases[nearByCases[i]]);
@@ -148,12 +154,11 @@ class Grid {
       // in case nearby mine is greater than 0
       cases[caseModel.index].nearbyMine = nByMines.toString();
       caseModel.grid.unCoverCells += 1;
-      print("Case discover:${caseModel.grid.unCoverCells}");
       uncovercase(caseModel);
     }
   }
 
-  void unCoverMines() {
+  Future unCoverMines() async {
     for (int i = 0; i < cases.length; i++) {
       if (cases[i].isMined) uncovercase(cases[i]);
     }
@@ -177,7 +182,6 @@ class Grid {
             if (this.unCoverCells == this.cellsWMine) {
               sessionController.updateWinState(true);
             }
-            print("Case discover:${caseModel.grid.unCoverCells}");
             List<int> nearByCases = nearbyCases(x, y);
             for (int i = 0; i < nearByCases.length; i++) {
               unCoverCases(cases[nearByCases[i]]);
@@ -186,7 +190,6 @@ class Grid {
             // in case nearby mine is greater than 0
             cases[caseModel.index].nearbyMine = nByMines.toString();
             caseModel.grid.unCoverCells += 1;
-            print("Case discover:${caseModel.grid.unCoverCells}");
             uncovercase(caseModel);
           }
         } else if (!hasFirstTouch) {
@@ -199,62 +202,13 @@ class Grid {
       } else if (sessionController.session.flagSelected) {
         //in case session flag is selected
         caseModel.isFlaged = true;
-        int mines = sessionController.session.remainMines;
-        sessionController.updateMines(mines - 1);
+        minesNumber -= 1;
         sessionController.updateFlagState(false);
       } else if (caseModel.isFlaged) {
         // case cell is flagged
         caseModel.isFlaged = false;
-        int mines = sessionController.session.remainMines;
-        sessionController.updateMines(mines + 1);
+        minesNumber += 1;
       }
     }
-  }
-}
-
-class GridController extends GetxController {
-  var _grid = Grid(16, 16).obs;
-
-  Grid get grid => _grid.value;
-
-  set grid(value) {
-    _grid = value;
-  }
-
-  var cases = <CaseModel>[].obs;
-  // void addCase(CaseModel caseModel) {
-  //   cases.add(caseModel);
-  // }
-
-  @override
-  void onInit() {
-    super.onInit();
-    _grid.update((val) {
-      val!.Casecreation();
-    });
-    update();
-  }
-
-  void reload() {
-    //cases.clear();
-    _grid.update((val) {
-      val!.Casecreation();
-    });
-    update();
-  }
-
-  void updateGrid(CaseModel caseModel) {
-    _grid.update((val) {
-      val!.unCoverCases(caseModel);
-    });
-    update();
-  }
-
-  void updateCase(int id, CaseModel caseModel) {
-    //cases[id] = caseModel;
-    _grid.update((val) {
-      val!.cases[id] = caseModel;
-    });
-    update();
   }
 }

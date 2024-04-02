@@ -1,4 +1,5 @@
-import 'package:demineur/models/grid.dart';
+import 'package:demineur/controllers/grid_controller.dart';
+import 'package:demineur/controllers/session_controller.dart';
 import 'package:demineur/models/session.dart';
 import 'package:demineur/utils/colors.dart';
 import 'package:demineur/views/screens/home_screen.dart';
@@ -8,45 +9,14 @@ import 'package:demineur/views/widgets/casewidget.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/material.dart';
 
-// ignore: must_be_immutable
 class GamePage extends StatelessWidget {
   GamePage({super.key});
 
-  Session session = Session(false, 0, 0, false, false);
+  final Session session = Session(0, false, false);
 
-  //Grid grid = Grid(16, 16);
+  final GridController gridController = Get.put(GridController());
 
-  GridController gridController = Get.put(GridController());
-
-  SessionController sessionController = Get.put(SessionController());
-
-  //List<CaseModel> listCases = [];
-
-  // @override
-  void winDialog(BuildContext context) {
-    if (sessionController.session.win) {
-      showAdaptiveDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text("You Win"),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Image.asset(
-                    "assets/gif/win_animation.gif",
-                    height: 100,
-                  )
-                ],
-              ),
-              actions: [
-                TextButton(onPressed: () {}, child: Text("Home")),
-                TextButton(onPressed: () {}, child: Text("Try again"))
-              ],
-            );
-          });
-    }
-  }
+  final SessionController sessionController = Get.put(SessionController());
 
   @override
   Widget build(BuildContext context) {
@@ -78,7 +48,7 @@ class GamePage extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              "Mines left: ${sessionController.session.remainMines}",
+                              "Mines left: ${gridController.grid.minesNumber}",
                               style: TextStyle(fontSize: 22),
                             ),
                             Text("${minuteString}:${secondString}",
@@ -156,43 +126,5 @@ class GamePage extends StatelessWidget {
         });
       }),
     );
-  }
-
-  void loseDialog(BuildContext context) {
-    if (sessionController.session.lose) {
-      showAdaptiveDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text(
-                "Game Over",
-                style: TextStyle(color: BaseColors.darkSecondary),
-              ),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Image.asset(
-                    "assets/gif/explosion.gif",
-                    height: 200,
-                  )
-                ],
-              ),
-              actions: [
-                TextButton(
-                    onPressed: () {
-                      Get.to(() => HomeScreen());
-                    },
-                    child: Text("Home")),
-                TextButton(
-                    onPressed: () {
-                      Get.back();
-                      Get.off(() => GamePage());
-                    },
-                    child: Text("Try again"))
-              ],
-            );
-          });
-    }
   }
 }

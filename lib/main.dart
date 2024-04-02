@@ -1,13 +1,24 @@
+import 'dart:io';
+
+import 'package:demineur/models/session.dart';
 import 'package:demineur/utils/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hive/hive.dart';
+import 'package:path_provider/path_provider.dart' as pathProvider;
 
-void main() {
+void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   FlutterNativeSplash.remove();
+  Directory appDirectory =
+      await pathProvider.getApplicationDocumentsDirectory();
+  var path = appDirectory.path;
+  Hive
+    ..init(path)
+    ..registerAdapter(SessionAdapter());
   runApp(const MyApp());
 }
 

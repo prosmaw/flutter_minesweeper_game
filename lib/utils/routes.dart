@@ -15,5 +15,5 @@ final getPages = [
   GetPage(name: Routes.Home, page: () => const HomeScreen()),
   GetPage(name: Routes.GamePage, page: () => GamePage()),
   GetPage(name: Routes.SettingsPage, page: () => const Settings()),
-  GetPage(name: Routes.StatisticsPage, page: () => const StatisticsPage())
+  GetPage(name: Routes.StatisticsPage, page: () => StatisticsPage())
 ];

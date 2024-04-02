@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:demineur/utils/routes.dart';
 import 'package:demineur/views/screens/game_page.dart';
+import 'package:demineur/views/screens/statistic_page.dart';
 import 'package:demineur/views/widgets/bottom_rounded.dart';
 import 'package:demineur/views/widgets/custom_button.dart';
 import 'package:flutter/material.dart' hide BoxDecoration, BoxShadow;
@@ -80,7 +81,7 @@ class HomeScreen extends StatelessWidget {
                   width: width,
                   LeftIcon: Icons.star,
                   ontapLeft: () {
-                    Get.toNamed(Routes.StatisticsPage);
+                    Get.to(() => StatisticsPage());
                   },
                   rightIcon: Icons.settings,
                   ontapRight: () {
