@@ -1,50 +1,48 @@
 import 'package:demineur/models/case.dart';
+import 'package:demineur/models/grid.dart';
 import 'package:demineur/models/session.dart';
 import 'package:demineur/utils/colors.dart';
-
-import 'package:demineur/views/screens/game_page.dart';
 import 'package:demineur/views/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
 // ignore: must_be_immutable
-class Casewidget extends StatefulWidget {
+class Casewidget extends StatelessWidget {
   CaseModel caseModel;
   Casewidget({super.key, required this.caseModel});
 
-  @override
-  State<Casewidget> createState() => _CasewidgetState();
-}
+  SessionController sessionController = Get.find<SessionController>();
 
-class _CasewidgetState extends State<Casewidget> {
-  SessionController sessionController = Get.put(SessionController());
+  GridController gridController = Get.find<GridController>();
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        print("isMined: ${widget.caseModel.isMined}");
+        print("isMined: ${caseModel.isMined}");
         if (!sessionController.session.flagSelected &&
-            widget.caseModel.isMined &&
-            !widget.caseModel.isFlaged) {
+            caseModel.isMined &&
+            !caseModel.isFlaged) {
           sessionController.updateLoseState(true);
           sessionController.stopTimer();
-          loseDialog();
+          loseDialog(context);
         } else {
-          widget.caseModel.grid.unCoverCases(widget.caseModel);
+          //widget.caseModel.grid.unCoverCases(widget.caseModel);
+          gridController.updateGrid(caseModel);
         }
       },
       child: Container(
           height: 30,
           width: 30,
           decoration: BoxDecoration(
-              color: widget.caseModel.unCovered
+              color: caseModel.unCovered
                   ? BaseColors.darkSecondary
                   : Color.fromARGB(255, 199, 184, 184),
               borderRadius: BorderRadius.circular(5),
               border: Border.all(strokeAlign: BorderSide.strokeAlignOutside)),
-          child: widget.caseModel.unCovered //check if unCovered
-              ? widget.caseModel.isMined
+          child: caseModel.unCovered //check if unCovered
+              ? caseModel.isMined
                   ? SvgPicture.asset(
                       "assets/images/bomb.svg",
                       height: 20,
@@ -52,19 +50,19 @@ class _CasewidgetState extends State<Casewidget> {
                     )
                   : Center(
                       child: Text(
-                        widget.caseModel.nearbyMine,
+                        caseModel.nearbyMine,
                         style: TextStyle(
                           color: Colors.white,
                         ),
                       ),
                     )
-              : widget.caseModel.isFlaged
+              : caseModel.isFlaged
                   ? SvgPicture.asset("assets/images/flagad.svg")
                   : SizedBox()),
     );
   }
 
-  void loseDialog() {
+  void loseDialog(BuildContext context) {
     if (sessionController.session.lose) {
       showAdaptiveDialog(
           context: context,
@@ -92,7 +90,9 @@ class _CasewidgetState extends State<Casewidget> {
                     child: Text("Home")),
                 TextButton(
                     onPressed: () {
-                      Get.to(() => GamePage());
+                      sessionController.reload();
+                      gridController.reload();
+                      Get.back();
                     },
                     child: Text("Try again"))
               ],

@@ -1,4 +1,3 @@
-import 'package:demineur/models/case.dart';
 import 'package:demineur/models/grid.dart';
 import 'package:demineur/models/session.dart';
 import 'package:demineur/utils/colors.dart';
@@ -9,27 +8,22 @@ import 'package:demineur/views/widgets/casewidget.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/material.dart';
 
-class GamePage extends StatefulWidget {
-  const GamePage({super.key});
+// ignore: must_be_immutable
+class GamePage extends StatelessWidget {
+  GamePage({super.key});
 
-  @override
-  State<GamePage> createState() => _GamePageState();
-}
-
-class _GamePageState extends State<GamePage> {
   Session session = Session(false, 0, 0, false, false);
-  Grid grid = Grid(16, 16);
+
+  //Grid grid = Grid(16, 16);
+
   GridController gridController = Get.put(GridController());
+
   SessionController sessionController = Get.put(SessionController());
-  List<CaseModel> listCases = [];
 
-  @override
-  void initState() {
-    super.initState();
-    listCases = grid.Casecreation();
-  }
+  //List<CaseModel> listCases = [];
 
-  void winDialog() {
+  // @override
+  void winDialog(BuildContext context) {
     if (sessionController.session.win) {
       showAdaptiveDialog(
           context: context,
@@ -65,7 +59,6 @@ class _GamePageState extends State<GamePage> {
         String minuteString = minutes.toString().padLeft(2, '0');
         String secondString = seconds.toString().padLeft(2, '0');
         return GetBuilder<GridController>(builder: (_) {
-          print("Flag selected: ${sessionController.session.flagSelected}");
           return Container(
             height: height,
             width: width,
@@ -102,13 +95,12 @@ class _GamePageState extends State<GamePage> {
                         child: GridView.builder(
                             gridDelegate:
                                 SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: grid.col),
-                            itemCount: (grid.col * grid.row),
+                                    crossAxisCount: gridController.grid.col),
+                            itemCount: (gridController.grid.col *
+                                gridController.grid.col),
                             itemBuilder: (BuildContext context, int index) {
-                              gridController.addCase(listCases[index]);
                               return Casewidget(
-                                caseModel:
-                                    gridController.casesController[index],
+                                caseModel: gridController.grid.cases[index],
                               );
                             }),
                       )),
@@ -155,8 +147,6 @@ class _GamePageState extends State<GamePage> {
                     ontapRight: () {
                       sessionController.reload();
                       gridController.reload();
-                      grid = Grid(16, 16);
-                      listCases = grid.Casecreation();
                     },
                   ),
                 ],
@@ -168,7 +158,7 @@ class _GamePageState extends State<GamePage> {
     );
   }
 
-  void loseDialog() {
+  void loseDialog(BuildContext context) {
     if (sessionController.session.lose) {
       showAdaptiveDialog(
           context: context,
@@ -204,10 +194,5 @@ class _GamePageState extends State<GamePage> {
             );
           });
     }
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 }

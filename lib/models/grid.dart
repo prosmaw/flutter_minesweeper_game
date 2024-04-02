@@ -25,13 +25,12 @@ class Grid {
   List<CaseModel> cases = [];
   bool hasFirstTouch = false;
 
-  GridController gridController = Get.put(GridController());
   SessionController sessionController = Get.put(SessionController());
 
   Grid(this._col, this._row);
 
   //case list creation
-  List<CaseModel> Casecreation() {
+  void Casecreation() {
     int caseNumbers = col * row;
     this.cellsWMine = 40;
     sessionController.updateMines(cellsWMine);
@@ -40,7 +39,7 @@ class Grid {
       int y = j ~/ col;
       cases.add(CaseModel(false, j, x, y, false, false, this));
     }
-    return cases;
+    //return cases;
   }
 
 //Case list update with random mined cases
@@ -64,7 +63,6 @@ class Grid {
       //verified if the index is among mined indexes
       //and set the case as mined
       this.cases[minedIndex[j]].isMined = true;
-      gridController.updateCase(minedIndex[j], this.cases[minedIndex[j]]);
     }
   }
 
@@ -120,7 +118,6 @@ class Grid {
   //change of the uncover state of a specific cell
   void uncovercase(CaseModel ca) {
     cases[ca.index].unCovered = true;
-    gridController.updateCase(ca.index, cases[ca.index]);
   }
 
   //first touch uncover function
@@ -202,14 +199,12 @@ class Grid {
       } else if (sessionController.session.flagSelected) {
         //in case session flag is selected
         caseModel.isFlaged = true;
-        gridController.updateCase(caseModel.index, caseModel);
         int mines = sessionController.session.remainMines;
         sessionController.updateMines(mines - 1);
         sessionController.updateFlagState(false);
       } else if (caseModel.isFlaged) {
         // case cell is flagged
         caseModel.isFlaged = false;
-        gridController.updateCase(caseModel.index, caseModel);
         int mines = sessionController.session.remainMines;
         sessionController.updateMines(mines + 1);
       }
@@ -218,18 +213,48 @@ class Grid {
 }
 
 class GridController extends GetxController {
-  var casesController = <CaseModel>[].obs;
-  void addCase(CaseModel caseModel) {
-    casesController.add(caseModel);
+  var _grid = Grid(16, 16).obs;
+
+  Grid get grid => _grid.value;
+
+  set grid(value) {
+    _grid = value;
+  }
+
+  var cases = <CaseModel>[].obs;
+  // void addCase(CaseModel caseModel) {
+  //   cases.add(caseModel);
+  // }
+
+  @override
+  void onInit() {
+    super.onInit();
+    _grid.update((val) {
+      val!.Casecreation();
+    });
+    update();
   }
 
   void reload() {
-    casesController.clear();
+    //cases.clear();
+    _grid.update((val) {
+      val!.Casecreation();
+    });
+    update();
+  }
+
+  void updateGrid(CaseModel caseModel) {
+    _grid.update((val) {
+      val!.unCoverCases(caseModel);
+    });
     update();
   }
 
   void updateCase(int id, CaseModel caseModel) {
-    casesController[id] = caseModel;
+    //cases[id] = caseModel;
+    _grid.update((val) {
+      val!.cases[id] = caseModel;
+    });
     update();
   }
 }
