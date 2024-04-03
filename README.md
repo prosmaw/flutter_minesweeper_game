@@ -1,4 +1,16 @@
-# demineur
+# MineSweeper
+
+I try to do a mobile version of the Minesweeper game using flutter
+
+Design from: https://bit.ly/49kTTgy 
+
+part completed : 
+
+- Classic Mode
+- Statistics
+- Settings ( just the interface)
+
+
 
 A new Flutter project.
 
