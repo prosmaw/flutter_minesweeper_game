@@ -10,8 +10,15 @@ part completed :
 - Statistics
 - Settings ( just the interface)
 
+<img src="https://github.com/prosmaw/demineur/blob/main/assets/images/Screenshot_20240402-202853.png" width="350" height="790"> <img src="https://github.com/prosmaw/demineur/blob/main/assets/images/Screenshot_20240402-202910.png" width="350" height="790">   
 
 
+<img src="https://github.com/prosmaw/demineur/blob/main/assets/images/Screenshot_20240402-202927.png" width="350" height="790">  <img src="https://github.com/prosmaw/demineur/blob/main/assets/images/Screenshot_20240402-202946.png" width="350" height="790">   
+
+<img src="https://github.com/prosmaw/demineur/blob/main/assets/images/Screenshot_20240402-202955.png" width="350" height="790">  <img src="https://github.com/prosmaw/demineur/blob/main/assets/images/Screenshot_20240402-203001.png" width="350" height="790">
+
+
+<img src="https://github.com/prosmaw/demineur/blob/main/assets/images/Screenshot_20240402-203025.png" width="350" height="790">  <img src="https://github.com/prosmaw/demineur/blob/main/assets/images/Screenshot_20240402-203210.png" width="350" height="790"> <img src="https://github.com/prosmaw/demineur/blob/main/assets/images/Screenshot_20240402-203255.png" width="350" height="790">
 A new Flutter project.
 
 ## Getting Started
