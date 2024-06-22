@@ -59,7 +59,7 @@ class _CustomSliderState extends State<CustomSlider> {
                 min: 0,
                 max: 100,
                 thumbColor: Colors.white,
-                overlayColor: MaterialStatePropertyAll(
+                overlayColor: WidgetStatePropertyAll(
                     Color.fromARGB(255, 87, 174, 211).withOpacity(0.5)),
                 activeColor: Colors.transparent,
                 inactiveColor: Colors.transparent,
